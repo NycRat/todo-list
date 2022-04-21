@@ -1,17 +1,20 @@
+import { ITodoItem } from "./TodoItem";
 import TodoItem from "./TodoItem";
 
-interface IProps {
-  todoItems: Array<typeof TodoItem>,
-  handlePop: () => void
+interface ITodoListProps {
+  todoItems: Array<ITodoItem>,
+  onDelete: (item: ITodoItem) => void
 }
 
-const TodoList = (props: IProps) => {
+const TodoList = (props: ITodoListProps): JSX.Element => {
   return (
-    <ol>
-      {props.todoItems.map((item, i) => {
-        return <li key={i}>{item({ handlePop: props.handlePop })}</li>
-      })}
-    </ol>
+    <div>
+      <ul>
+        {props.todoItems.map((item, i) => {
+          return <li key={i}>{TodoItem({ itemInfo: item, onDelete: props.onDelete })}</li>
+        })}
+      </ul>
+    </div>
   );
 }
 

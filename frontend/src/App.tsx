@@ -1,29 +1,59 @@
 import React from 'react';
-import TodoItem from './Components/TodoItem';
+import Navbar from './Components/NavBar';
 import TodoList from './Components/TodoList';
+import { ITodoItem } from './Components/TodoItem'
+import './Scss/components.scss'
 
-const App = () => {
+const App = (): JSX.Element => {
 
-  const [todoItems, setTodo] = React.useState<Array<typeof TodoItem>>(new Array<typeof TodoItem>());
+  const [todoItems, setTodo] = React.useState<Array<ITodoItem>>(new Array<ITodoItem>());
+  const [curTodoInfo, setCurTodoInfo] = React.useState<ITodoItem>({ name: '', id: 0 });
 
-  if (todoItems.length === 0) {
-    for (let i = 0; i < 10; i++) {
-      todoItems.push(TodoItem);
+  const handleDelete = (item: ITodoItem): void => {
+    let newTodoItems = [...todoItems];
+    for (let i = 0; i < newTodoItems.length; i++) {
+      if (newTodoItems[i].id === item.id && newTodoItems[i].name === item.name) {
+        newTodoItems.splice(i, 1);
+        break;
+      }
     }
+    setTodo(newTodoItems);
   }
 
-  const popItems = () => {
+  const handleAddTodoItem = (item: ITodoItem): void => {
     let newTodoItems = [...todoItems];
-    newTodoItems.pop();
+    newTodoItems.push(item);
     setTodo(newTodoItems);
+  }
+
+  const handleUpdateCurTodoItem = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setCurTodoInfo({ name: event.target.value, id: 0 });
+  }
+
+  const handleSubmitNewTodoItem = (event: React.FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    if (curTodoInfo.name === '') {
+      return;
+    }
+    handleAddTodoItem(curTodoInfo);
+    // setCurTodoInfo({ name: '', id: 0 });
   }
 
   return (
     <div>
-      <h1>
-        {TodoList({ todoItems: todoItems, handlePop: popItems })}
-      </h1>
-    </div>
+      {Navbar()}
+      <div className='app'>
+        <h2>
+          <form onSubmit={(e) => handleSubmitNewTodoItem(e)}>
+            <label>
+              New Todo Item: <input type="text" name="name" onChange={(e) => { handleUpdateCurTodoItem(e) }} />
+            </label>
+            <input type='submit' name='ADD' />
+          </form>
+          {TodoList({ todoItems: todoItems, onDelete: handleDelete })}
+        </h2>
+      </div>
+    </div >
   );
 
 }

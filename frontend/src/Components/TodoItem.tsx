@@ -1,14 +1,21 @@
+import '../Scss/components.scss'
+
+export interface ITodoItem {
+  name: string,
+  id: number
+}
 
 export interface TodoItemProps {
-  handlePop: () => void
+  itemInfo: ITodoItem,
+  onDelete: (item: ITodoItem) => void
 }
 
 const TodoItem = (props: TodoItemProps): JSX.Element => {
   return (
-    <div>
-      <p>TODO ITEM</p>
-      <button onClick={props.handlePop}>DONE</button>
-    </div>
+    <span>
+      <button onClick={() => { props.onDelete(props.itemInfo) }}>DONE</button>
+      <p className="todoitem">{props.itemInfo.name}</p>
+    </span >
   );
 }
 
