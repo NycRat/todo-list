@@ -12,7 +12,7 @@ export const createKey = () => {
   return key;
 }
 
-export const encryptPassword = (password, key) => {
+export const encryptPassword = (password: string, key: string) => {
   let encrypted = '';
   let startOff = key.charCodeAt(0) - 'a'.charCodeAt(0) + 1;
   let len = key[startOff].charCodeAt(0) - 32;
@@ -29,12 +29,12 @@ export const encryptPassword = (password, key) => {
   return encrypted;
 }
 
-export const decryptPassword = (password, key) => {
+export const decryptPassword = (password: string, key: string) => {
   let decrypted = '';
   let startOff = key.charCodeAt(0) - 'a'.charCodeAt(0) + 1;
   let len = key[startOff].charCodeAt(0) - 32;
 
-  let decryptMap = {}
+  let decryptMap: any = {} // fix tyhis laeter
   let cur = startOff + 1;
   for (let i = 32; i <= 126; i++) {
     decryptMap[key.substring(cur, cur + len)] = String.fromCharCode(i);
@@ -47,7 +47,7 @@ export const decryptPassword = (password, key) => {
   return decrypted;
 }
 
-const rand = (min, max) => {
+const rand = (min: number, max: number) => {
   if (min > max) {
     let t = min;
     min = max;
