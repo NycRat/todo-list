@@ -1,6 +1,6 @@
 import express from 'express';
 import router from './Server.route';
-// import cors from 'cors';
+import cors from 'cors';
 import mongodb from 'mongodb';
 import { createKey, decryptPassword, encryptPassword } from './Password';
 import dotenv from 'dotenv';
@@ -21,18 +21,18 @@ client.connect();
 
 
 const app = express();
-// app.use(cors());
+app.use(cors());
 app.use(express.json());
 app.use('/', router);
 app.use('*', (req, res) => res.status(404).json({ error: 'not found' }));
 
 
-interface LoginInfo {
+export interface LoginInfo {
   username: string,
   password: string
 }
 
-interface Status {
+export interface Status {
   success: boolean,
   msg: string
 }
@@ -115,6 +115,25 @@ export const apiGetTodoList = async (loginInfo: LoginInfo): Promise<{ status: St
     returnData = doc['TodoItems'];
   });
   return { status: returnStatus, data: returnData };
+}
+
+export const apiDeleteTodoItem = async (loginInfo: LoginInfo, index: number): Promise<Status> => {
+  let returnStatus = { success: false, msg: 'database error' };
+  if (!await apiLogin(loginInfo)) {
+    return { success: false, msg: 'login failure' };
+  }
+  const collection = client.db('Todo-List-DB').collection('Users');
+  await collection.findOne({ Username: loginInfo.username }).then(async (userInfo) => {
+    if (userInfo === null) {
+      returnStatus = { success: false, msg: "user not found" };
+      return;
+    }
+    userInfo['TodoItems'].splice(index, 1);
+    await collection.findOneAndReplace({ Username: loginInfo.username }, userInfo);
+    returnStatus = { success: true, msg: 'todo item deleted' };
+  });
+
+  return returnStatus;
 }
 
 app.listen(PORT, () => { console.log(`listening on port ${PORT}`) });

@@ -1,20 +1,13 @@
-import '../Scss/components.scss'
-
-export interface ITodoItem {
-  name: string,
-  id: number
-}
-
 export interface TodoItemProps {
-  itemInfo: ITodoItem,
-  onDelete: (item: ITodoItem) => void
+  itemInfo: string,
+  onDelete: () => void
 }
 
 const TodoItem = (props: TodoItemProps): JSX.Element => {
   return (
     <span>
-      <button onClick={() => { props.onDelete(props.itemInfo) }}>DONE</button>
-      <p className="todoitem">{props.itemInfo.name}</p>
+      <button onClick={props.onDelete}>DONE</button>
+      <p className="todoitem">{props.itemInfo}</p>
     </span >
   );
 }

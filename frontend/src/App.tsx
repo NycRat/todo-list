@@ -1,58 +1,81 @@
 import React from 'react';
 import Navbar from './Components/NavBar';
 import TodoList from './Components/TodoList';
-import { ITodoItem } from './Components/TodoItem'
-import './Scss/components.scss'
+import { HashRouter, Route, Routes } from 'react-router-dom';
+import LoginPage, { LoginInfo } from './Components/LoginPage';
+import { serverAddTodoItem, serverDeleteTodoItem, serverLogin, serverGetTodoItems } from './serverFunctions';
 
 const App = (): JSX.Element => {
 
-  const [todoItems, setTodo] = React.useState<Array<ITodoItem>>(new Array<ITodoItem>());
-  const [curTodoInfo, setCurTodoInfo] = React.useState<ITodoItem>({ name: '', id: 0 });
+  const [todoItems, setTodoList] = React.useState<Array<string>>(new Array<string>());
+  const [curTodoInfo, setCurTodoInfo] = React.useState<string>('');
+  const [loginInfo, setLoginInfo] = React.useState<LoginInfo>({ username: '', password: '' });
 
-  const handleDelete = (item: ITodoItem): void => {
+  const handleDelete = async (index: number): Promise<void> => {
     let newTodoItems = [...todoItems];
-    for (let i = 0; i < newTodoItems.length; i++) {
-      if (newTodoItems[i].id === item.id && newTodoItems[i].name === item.name) {
-        newTodoItems.splice(i, 1);
-        break;
-      }
-    }
-    setTodo(newTodoItems);
+    newTodoItems.splice(index, 1);
+    await serverDeleteTodoItem(loginInfo, index);
+    setTodoList(newTodoItems);
   }
 
-  const handleAddTodoItem = (item: ITodoItem): void => {
+  const handleAddTodoItem = (item: string): void => {
     let newTodoItems = [...todoItems];
     newTodoItems.push(item);
-    setTodo(newTodoItems);
+    setTodoList(newTodoItems);
   }
 
   const handleUpdateCurTodoItem = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setCurTodoInfo({ name: event.target.value, id: 0 });
+    setCurTodoInfo(event.target.value);
   }
 
-  const handleSubmitNewTodoItem = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmitNewTodoItem = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
-    if (curTodoInfo.name === '') {
+    if (curTodoInfo === '') {
       return;
     }
     handleAddTodoItem(curTodoInfo);
-    // setCurTodoInfo({ name: '', id: 0 });
+    if (loginInfo.username !== '') {
+      await serverAddTodoItem(loginInfo, curTodoInfo);
+      console.log('woah')
+    }
+  }
+
+  const handleLoginTry = async (newLoginInfo: LoginInfo) => {
+    if (await serverLogin(newLoginInfo)) {
+      setLoginInfo(newLoginInfo);
+      setTodoList(await serverGetTodoItems(newLoginInfo));
+    }
   }
 
   return (
     <div>
       {Navbar()}
-      <div className='app'>
-        <h2>
-          <form onSubmit={(e) => handleSubmitNewTodoItem(e)}>
-            <label>
-              New Todo Item: <input type="text" name="name" onChange={(e) => { handleUpdateCurTodoItem(e) }} />
-            </label>
-            <input type='submit' name='ADD' />
-          </form>
-          {TodoList({ todoItems: todoItems, onDelete: handleDelete })}
-        </h2>
-      </div>
+      <HashRouter>
+        <Routes>
+          <Route path='/' element={
+            <div className='app'>
+              <h2>
+                <form onSubmit={(e) => handleSubmitNewTodoItem(e)}>
+                  <label>
+                    New Todo Item: <input type="text" name="name" onChange={(e) => { handleUpdateCurTodoItem(e) }} />
+                  </label>
+                  <input type='submit' name='ADD' />
+                </form>
+                {TodoList({ todoItems: todoItems, onDelete: handleDelete })}
+              </h2>
+            </div>
+          }>
+          </Route>
+          <Route path='/login' element={LoginPage({ handleLogin: handleLoginTry })}>
+          </Route>
+          <Route path='*' element={
+            <h1>
+              404 page not found
+            </h1>
+          }>
+          </Route>
+        </Routes>
+      </HashRouter>
     </div >
   );
 

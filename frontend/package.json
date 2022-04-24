@@ -10,12 +10,20 @@
     "@types/node": "^16.11.27",
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.1",
+    "axios": "^0.26.1",
+    "path": "^0.12.7",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "sass": "^1.50.1",
     "typescript": "^4.6.3",
     "web-vitals": "^2.1.4"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   },
   "scripts": {
     "start": "react-scripts start",

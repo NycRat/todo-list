@@ -1,9 +1,8 @@
-import { ITodoItem } from "./TodoItem";
 import TodoItem from "./TodoItem";
 
 interface ITodoListProps {
-  todoItems: Array<ITodoItem>,
-  onDelete: (item: ITodoItem) => void
+  todoItems: Array<string>,
+  onDelete: (index: number) => void
 }
 
 const TodoList = (props: ITodoListProps): JSX.Element => {
@@ -11,7 +10,7 @@ const TodoList = (props: ITodoListProps): JSX.Element => {
     <div>
       <ul>
         {props.todoItems.map((item, i) => {
-          return <li key={i}>{TodoItem({ itemInfo: item, onDelete: props.onDelete })}</li>
+          return <li key={i}>{TodoItem({ itemInfo: item, onDelete: () => { props.onDelete(i) } })}</li>
         })}
       </ul>
     </div>
