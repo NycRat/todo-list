@@ -39,14 +39,8 @@ export interface Status {
 
 export const apiAddNewUser = async (loginInfo: LoginInfo): Promise<Status> => {
   const usersCollection = client.db('LoginInfo').collection('Users');
-  let alreadyExists = false;
-  await usersCollection.findOne({ username: loginInfo.username }).then((val) => {
-    if (val !== null) {
-      alreadyExists = true;
-    }
-  });
 
-  if (alreadyExists) {
+  if (await usersCollection.findOne({ Username: loginInfo.username }) !== null) {
     return { success: false, msg: 'user already exist' };
   }
 

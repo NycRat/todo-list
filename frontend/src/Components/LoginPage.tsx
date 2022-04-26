@@ -6,7 +6,8 @@ export interface LoginInfo {
 }
 
 export interface LoginPageProps {
-  handleLogin: (loginInfo: LoginInfo) => Promise<void>
+  handleLogin: (loginInfo: LoginInfo) => Promise<void>,
+  handleSignup: (loginInfo: LoginInfo) => Promise<void>
 }
 
 const LoginPage = (props: LoginPageProps): JSX.Element => {
@@ -20,23 +21,24 @@ const LoginPage = (props: LoginPageProps): JSX.Element => {
     setLoginInfo({ username: loginInfo.username, password: event.target.value });
   }
 
-  return <div>
-    <form onSubmit={(event) => {
+  return <div className="login-page">
+    <form className="login-form" onSubmit={(event) => {
       event.preventDefault();
-      props.handleLogin(loginInfo);
     }}>
-      <label>
-        Username: <input type="text" name="username" onChange={(e) => { handleUpdateUsername(e) }} />
+      <label className="login-input">
+        Username: <input placeholder="Enter username" type="username" name="username" onChange={(e) => { handleUpdateUsername(e); }} />
       </label>
       <br></br>
-      <label>
-        Password: <input type="password" name="password" onChange={(e) => { handleUpdatePassword(e) }} />
+      <label className="login-input">
+        Password: <input placeholder="Enter password" type="password" name="password" onChange={(e) => { handleUpdatePassword(e); }} />
       </label>
     </form>
-    <button className="login-button" onClick={() => {
-      props.handleLogin(loginInfo);
-    }}>
+    <br></br>
+    <button className="login-button" onClick={() => { props.handleLogin(loginInfo); }}>
       LOGIN
+    </button>
+    <button className="login-button" onClick={() => { props.handleSignup(loginInfo); }}>
+      SIGN-UP
     </button>
   </div>
 }

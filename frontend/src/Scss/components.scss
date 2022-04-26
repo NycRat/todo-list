@@ -39,6 +39,26 @@ $navtextcolour: white;
   margin-right: 30px;
 }
 
+.login-page {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: absolute;
+  width: 220px;
+  top: 30%;
+  left: 50%;
+  margin-left: -110px;
+  // margin-top: -20%;
+}
+
+.login-input {
+  width: 200px;
+}
+
+.login-form {
+  height: auto;
+}
+
 .login-button {
-  font-size: 50px
+  font-size: 40px;
 }

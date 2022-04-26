@@ -3,7 +3,7 @@ import Navbar from './Components/NavBar';
 import TodoList from './Components/TodoList';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import LoginPage, { LoginInfo } from './Components/LoginPage';
-import { serverAddTodoItem, serverDeleteTodoItem, serverLogin, serverGetTodoItems } from './serverFunctions';
+import { serverAddTodoItem, serverDeleteTodoItem, serverLogin, serverGetTodoItems, serverAddNewUser } from './serverFunctions';
 
 const App = (): JSX.Element => {
 
@@ -11,11 +11,11 @@ const App = (): JSX.Element => {
   const [curTodoInfo, setCurTodoInfo] = React.useState<string>('');
   const [loginInfo, setLoginInfo] = React.useState<LoginInfo>({ username: '', password: '' });
 
-  const handleDelete = async (index: number): Promise<void> => {
+  const handleDelete = (index: number): void => {
     let newTodoItems = [...todoItems];
     newTodoItems.splice(index, 1);
-    await serverDeleteTodoItem(loginInfo, index);
     setTodoList(newTodoItems);
+    serverDeleteTodoItem(loginInfo, index);
   }
 
   const handleAddTodoItem = (item: string): void => {
@@ -28,22 +28,27 @@ const App = (): JSX.Element => {
     setCurTodoInfo(event.target.value);
   }
 
-  const handleSubmitNewTodoItem = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmitNewTodoItem = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     if (curTodoInfo === '') {
       return;
     }
     handleAddTodoItem(curTodoInfo);
     if (loginInfo.username !== '') {
-      await serverAddTodoItem(loginInfo, curTodoInfo);
-      console.log('woah')
+      serverAddTodoItem(loginInfo, curTodoInfo);
     }
   }
 
-  const handleLoginTry = async (newLoginInfo: LoginInfo) => {
+  const handleLoginTry = async (newLoginInfo: LoginInfo): Promise<void> => {
     if (await serverLogin(newLoginInfo)) {
       setLoginInfo(newLoginInfo);
       setTodoList(await serverGetTodoItems(newLoginInfo));
+    }
+  }
+
+  const handleSignupTry = async (signupInfo: LoginInfo): Promise<void> => {
+    if (await serverAddNewUser(signupInfo)) {
+      await handleLoginTry(signupInfo);
     }
   }
 
@@ -66,7 +71,7 @@ const App = (): JSX.Element => {
             </div>
           }>
           </Route>
-          <Route path='/login' element={LoginPage({ handleLogin: handleLoginTry })}>
+          <Route path='/login' element={LoginPage({ handleLogin: handleLoginTry, handleSignup: handleSignupTry })}>
           </Route>
           <Route path='*' element={
             <h1>

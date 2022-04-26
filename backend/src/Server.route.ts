@@ -39,6 +39,15 @@ router.
 
 router
   .route('/login')
+  .post(async (req, res) => {
+    try {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Content-type', 'application/json');
+      res.json(await apiAddNewUser(req.body['loginInfo']));
+    } catch (ex) {
+      res.status(404).json({ error: 'invalid request' });
+    }
+  })
   .get(async (req, res) => {
     try {
       res.setHeader('Access-Control-Allow-Origin', '*');
@@ -46,15 +55,6 @@ router
       if (typeof req.query['loginInfo'] === 'string') {
         res.json(await apiLogin(JSON.parse(req.query['loginInfo'])));
       }
-    } catch (ex) {
-      res.status(404).json({ error: 'invalid request' });
-    }
-  })
-  .post(async (req, res) => {
-    try {
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Content-type', 'application/json');
-      res.json(await apiAddNewUser(req.body['loginInfo']));
     } catch (ex) {
       res.status(404).json({ error: 'invalid request' });
     }

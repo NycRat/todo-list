@@ -14,7 +14,7 @@ export const serverLogin = async (loginInfo: LoginInfo): Promise<boolean> => {
 
 export const serverAddNewUser = async (loginInfo: LoginInfo): Promise<boolean> => {
   let success = false;
-  await axios.post(url + '/login', { params: { loginInfo: loginInfo } }).then((res) => {
+  await axios.post(url + '/login', { loginInfo: loginInfo }).then((res) => {
     console.log(res['data']);
     success = res['data']['success'];
   });
