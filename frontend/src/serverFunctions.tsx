@@ -1,7 +1,7 @@
 import axios from "axios";
 import { LoginInfo } from "./Components/LoginPage";
 
-const url = process.env.REACT_APP_SERVER_URL;
+const url = 'https://todo-list-server-0.herokuapp.com';
 
 export const serverLogin = async (loginInfo: LoginInfo): Promise<boolean> => {
   let success = false;
