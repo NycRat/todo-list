@@ -7,7 +7,7 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
-  font-family: Calibri, 'Trebuchet MS', sans-serif;
+  font-family: Calibri, "Trebuchet MS", sans-serif;
   background-color: $bgcolor;
 }
 
@@ -28,7 +28,8 @@ $navtextcolour: white;
 
 .navbar {
   background-color: $navbgcolour;
-  height: 52px;
+  height: fit-content;
+  padding: 10px;
 }
 
 .navlink {
@@ -60,5 +61,7 @@ $navtextcolour: white;
 }
 
 .login-button {
+  margin: 5px;
   font-size: 40px;
+  border-radius: 10px;
 }
